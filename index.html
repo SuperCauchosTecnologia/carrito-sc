@@ -3,18 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grupo Super Cauchos - Inventario</title>
+  <title>Grupo Super Cauchos - Cauchos</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
-     (function(){ emailjs.init("NdAFdUwfeMmVhLG-s"); })();
+     (function(){
+        emailjs.init("NdAFdUwfeMmVhLG-s"); 
+     })();
   </script>
+
   <style>
     .cart-drawer { transition: transform 0.3s ease; transform: translateX(100%); }
     .cart-drawer.open { transform: translateX(0); }
     .loader { border-top-color: #b91c1c; animation: spinner 0.6s linear infinite; }
     @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .img-product { object-fit: contain; background: #f9f9f9; }
   </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -22,70 +27,100 @@
   <header class="bg-white shadow-md sticky top-0 z-50">
     <div class="p-4 flex justify-between items-center bg-red-700 text-white">
       <h1 class="text-xl font-black italic uppercase">Grupo Super Cauchos</h1>
-      <button onclick="toggleCart()" class="relative p-2 bg-red-900 rounded-full">
+      <button onclick="toggleCart()" class="relative p-2 bg-red-900 rounded-full hover:bg-red-800 transition">
         <i class="fas fa-shopping-cart text-lg"></i>
         <span id="badge" class="absolute -top-1 -right-1 bg-yellow-400 text-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
       </button>
     </div>
+
     <div class="py-3 bg-white text-center border-b">
         <h2 class="text-red-700 font-black uppercase italic tracking-widest text-xs">Catálogo de Cauchos</h2>
     </div>
+
     <div class="p-3 bg-gray-50 border-b space-y-2">
       <div class="grid grid-cols-2 gap-2">
-        <select id="fCat" onchange="render()" class="p-2 border rounded-lg font-bold text-gray-700 text-xs outline-none">
+        <select id="fCat" onchange="render()" class="p-2 border rounded-lg font-bold text-gray-700 bg-white text-xs outline-none focus:border-red-500">
           <option value="">CATEGORÍA (Todas)</option>
         </select>
-        <select id="fMar" onchange="render()" class="p-2 border rounded-lg font-bold text-gray-700 text-xs outline-none">
+        <select id="fMar" onchange="render()" class="p-2 border rounded-lg font-bold text-gray-700 bg-white text-xs outline-none focus:border-red-500">
           <option value="">MARCA (Todas)</option>
         </select>
       </div>
-      <input id="fSearch" onkeyup="render()" type="text" placeholder="Buscar medida (ej: 175/70R13)..." class="w-full p-2 border rounded-lg text-sm outline-none">
+      <input id="fSearch" onkeyup="render()" type="text" placeholder="Buscar medida (ej: 175/70R13)..." class="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-red-500 outline-none">
     </div>
   </header>
 
   <main id="container" class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-24">
-    <div class="col-span-full text-center py-20 text-gray-400 font-bold italic">Cargando inventario de cauchos...</div>
+    <div class="col-span-full flex flex-col items-center py-20 text-gray-400 font-bold italic">
+        <div class="loader w-8 h-8 border-4 border-gray-200 rounded-full mb-4"></div>
+        Cargando inventario de cauchos...
+    </div>
   </main>
 
   <div id="overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 hidden z-[60]"></div>
   <div id="cart" class="fixed top-0 right-0 w-full sm:w-96 h-full bg-white z-[70] cart-drawer shadow-2xl flex flex-col">
     <div class="p-4 bg-red-700 text-white flex justify-between items-center">
-      <h2 class="font-bold italic uppercase tracking-wider">Mi Carrito</h2>
+      <h2 class="font-bold italic uppercase tracking-wider">Finalizar Pedido</h2>
       <button onclick="toggleCart()" class="text-3xl">&times;</button>
     </div>
+
     <div class="flex-1 overflow-y-auto p-4 space-y-4">
-      <div class="bg-gray-100 p-4 rounded-xl space-y-2">
-        <input type="text" id="cNombre" placeholder="Nombre completo" class="w-full p-2 border rounded text-sm">
-        <input type="email" id="cCorreo" placeholder="Correo" class="w-full p-2 border rounded text-sm">
-        <input type="tel" id="cTelefono" placeholder="Teléfono" class="w-full p-2 border rounded text-sm">
-        <input type="hidden" id="cPais" value="58">
+      <div class="bg-gray-100 p-4 rounded-xl space-y-3 border border-gray-200 shadow-inner">
+        <p class="text-[10px] font-black text-gray-500 uppercase">Información del Cliente</p>
+        <input type="text" id="cNombre" placeholder="Nombre completo" class="w-full p-2 border rounded-lg text-sm">
+        <input type="email" id="cCorreo" placeholder="Correo electrónico" class="w-full p-2 border rounded-lg text-sm">
+        <div class="flex gap-1">
+          <select id="cPais" class="p-2 border rounded-lg bg-white text-sm">
+            <option value="58">🇻🇪 +58</option>
+            <option value="57">🇨🇴 +57</option>
+          </select>
+          <input type="tel" id="cTelefono" placeholder="Teléfono" class="flex-1 p-2 border rounded-lg text-sm">
+        </div>
       </div>
       <div id="cartItems" class="space-y-2"></div>
     </div>
-    <div class="p-4 border-t">
-      <div class="flex justify-between text-2xl font-black mb-4 text-red-700">
-        <span>TOTAL:</span><span id="cartTotal">$0.00</span>
+
+    <div class="p-4 border-t bg-white shadow-2xl">
+      <div class="flex justify-between text-2xl font-black mb-4 text-red-700 italic">
+        <span>TOTAL:</span>
+        <span id="cartTotal">$0.00</span>
       </div>
-      <button onclick="procesarEnvio('ws')" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold mb-2">WHATSAPP</button>
-      <button id="btnMail" onclick="procesarEnvio('mail')" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">CORREO</button>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="procesarEnvio('ws')" class="bg-green-600 text-white py-4 rounded-xl font-bold flex flex-col items-center shadow-lg active:scale-95 transition hover:bg-green-700">
+          <i class="fab fa-whatsapp text-xl mb-1"></i><span class="text-[9px]">WHATSAPP</span>
+        </button>
+        <button id="btnMail" onclick="procesarEnvio('mail')" class="bg-blue-600 text-white py-4 rounded-xl font-bold flex flex-col items-center shadow-lg active:scale-95 transition hover:bg-blue-700">
+          <i class="fas fa-envelope text-xl mb-1"></i><span class="text-[9px]">CORREO CLIENTE</span>
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyZm5_LYkdYowK8kCPPfFNQvemOdyH7jGfF91HUZKQEFlSfqIStigWV7kFMuqJcLFDBMQ/exec'; 
+
     let rawData = [], cart = [];
 
     window.onload = () => {
       fetch(`${WEB_APP_URL}?action=getCauchos`)
         .then(res => res.json())
-        .then(data => { rawData = data; updateFilters(); render(); });
+        .then(data => {
+            rawData = data;
+            updateFilters();
+            render();
+        })
+        .catch(() => {
+            document.getElementById('container').innerHTML = '<div class="col-span-full text-center py-20 text-red-500 font-bold uppercase underline">Error de conexión</div>';
+        });
     };
 
     function updateFilters() {
-      const fMar = document.getElementById('fMar'), fCat = document.getElementById('fCat');
-      const mars = [...new Set(rawData.map(i => i.marca))].sort();
-      const cats = [...new Set(rawData.map(i => i.categoria))].sort();
+      const fMar = document.getElementById('fMar');
+      const mars = [...new Set(rawData.map(i => i.marca))].filter(Boolean).sort();
       fMar.innerHTML = '<option value="">MARCA (Todas)</option>' + mars.map(m => `<option value="${m}">${m}</option>`).join('');
+
+      const fCat = document.getElementById('fCat');
+      const cats = [...new Set(rawData.map(i => i.categoria))].filter(Boolean).sort();
       fCat.innerHTML = '<option value="">CATEGORÍA (Todas)</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
@@ -94,24 +129,34 @@
       const mar = document.getElementById('fMar').value, cat = document.getElementById('fCat').value;
 
       let filtered = rawData.filter(i => {
-        const txt = i.medida.toLowerCase() + " " + i.marca.toLowerCase();
+        const txt = i.medida.toLowerCase() + " " + i.marca.toLowerCase() + " " + i.categoria.toLowerCase();
         return txt.includes(search) && (!mar || i.marca === mar) && (!cat || i.categoria === cat);
       });
 
+      if(filtered.length === 0) {
+        box.innerHTML = '<div class="col-span-full text-center py-20 text-gray-400">Sin resultados.</div>';
+        return;
+      }
+
       box.innerHTML = filtered.map(i => `
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col">
-          <div class="flex justify-between mb-2">
-             <span class="text-[10px] bg-gray-800 text-white px-2 py-1 rounded font-bold">${i.marca}</span>
-             <span class="text-[10px] bg-red-100 text-red-700 px-2 py-1 rounded font-bold">${i.categoria}</span>
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col hover:border-red-300 transition-all">
+            <div class="flex justify-between items-start mb-3">
+              <span class="text-[10px] bg-red-100 text-red-700 px-2 py-1 rounded font-black uppercase tracking-tighter">${i.marca}</span>
+              <span class="text-[9px] text-gray-400 font-mono font-bold uppercase">${i.categoria}</span>
+            </div>
+            ${i.foto ? `<img src="${i.foto}" class="w-full h-32 img-product mb-3 rounded-lg" alt="caucho">` : ''}
+            <h3 class="font-bold text-gray-800 text-lg leading-tight mb-2 h-12 overflow-hidden">${i.medida}</h3>
+            
+            <div class="bg-gray-50 p-2 rounded-lg mb-4">
+              <p class="text-sm font-black text-green-700">Contado: $${i.precio.toFixed(2)}</p>
+              <p class="text-[10px] text-gray-500 font-bold uppercase italic">Crédito: $${i.credito.toFixed(2)}</p>
+            </div>
+
+            <div class="mt-auto flex justify-end">
+              <button onclick="add('${i.id}', '${i.medida} (${i.marca})', ${i.precio})" class="bg-gray-800 text-white px-5 py-2 rounded-xl font-black text-[10px] active:scale-95 transition hover:bg-black">AÑADIR</button>
+            </div>
           </div>
-          <h3 class="font-black text-gray-800 text-xl mb-1">${i.medida}</h3>
-          <div class="space-y-1 mb-4">
-             <p class="text-sm font-bold text-green-700">Contado: $${i.precio.toFixed(2)}</p>
-             <p class="text-xs text-gray-500 italic">Crédito: $${i.credito.toFixed(2)}</p>
-          </div>
-          <button onclick="add('${i.id}', '${i.medida} (${i.marca})', ${i.precio})" class="mt-auto bg-red-700 text-white py-2 rounded-xl font-black text-xs hover:bg-red-800">AÑADIR AL PEDIDO</button>
-        </div>
-      `).join('');
+        `).join('');
     }
 
     function add(id, name, price) {
@@ -124,11 +169,14 @@
       document.getElementById('badge').innerText = cart.reduce((a,b) => a + b.qty, 0);
       document.getElementById('cartItems').innerHTML = cart.map(i => `
         <div class="flex justify-between items-center bg-white p-3 border rounded-xl shadow-sm">
-          <div class="flex-1"><p class="text-[10px] font-bold uppercase">${i.name}</p><p class="text-xs text-red-600 font-black">$${(i.price*i.qty).toFixed(2)}</p></div>
+          <div class="flex-1 mr-3">
+            <p class="text-[10px] font-bold leading-tight uppercase text-gray-700">${i.name}</p>
+            <p class="text-xs text-red-600 font-black">$${(i.price*i.qty).toFixed(2)}</p>
+          </div>
           <div class="flex items-center gap-2">
-            <button onclick="changeQty('${i.id}',-1)" class="w-7 h-7 bg-gray-100 rounded">-</button>
-            <span class="text-xs font-bold">${i.qty}</span>
-            <button onclick="changeQty('${i.id}',1)" class="w-7 h-7 bg-gray-100 rounded">+</button>
+            <button onclick="changeQty('${i.id}',-1)" class="w-7 h-7 bg-gray-50 border rounded-lg font-bold">-</button>
+            <span class="text-xs font-bold w-4 text-center">${i.qty}</span>
+            <button onclick="changeQty('${i.id}',1)" class="w-7 h-7 bg-gray-50 border rounded-lg font-bold">+</button>
           </div>
         </div>
       `).join('');
@@ -147,18 +195,48 @@
     }
 
     function procesarEnvio(metodo) {
-      const nom = document.getElementById('cNombre').value, mail = document.getElementById('cCorreo').value, tel = document.getElementById('cTelefono').value;
-      if(!cart.length || !nom || !tel) return alert("Completa los datos.");
+      const nom = document.getElementById('cNombre').value;
+      const mail = document.getElementById('cCorreo').value;
+      const cod = document.getElementById('cPais').value;
+      const tel = document.getElementById('cTelefono').value;
+      const totalLabel = document.getElementById('cartTotal').innerText;
 
-      const pedidoData = { tipo: 'caucho', cliente: { nombre: nom, correo: mail, codigo: '58', telefono: tel }, carrito: cart, total: document.getElementById('cartTotal').innerText };
+      if(!cart.length || !nom || !tel) return alert("Por favor completa los datos.");
 
       if(metodo === 'ws') {
-        let msg = `*PEDIDO DE CAUCHOS*\n*Cliente:* ${nom}\n\n` + cart.map(i => `• ${i.name} x${i.qty}`).join('\n');
-        window.open(`https://wa.me/58${tel.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank');
+        let msg = `*NUEVO PEDIDO DE CAUCHOS*\n\n*Cliente:* ${nom}\n*Telf:* +${cod}${tel}\n\n`;
+        cart.forEach(i => msg += `• ${i.name} [x${i.qty}] - $${(i.price*i.qty).toFixed(2)}\n`);
+        msg += `\n*TOTAL: ${totalLabel}*`;
+        window.open(`https://wa.me/${cod}${tel.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank');
       } else {
+        const btn = document.getElementById('btnMail');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xl"></i>';
+
+        const pedidoData = {
+          tipo: 'caucho', 
+          cliente: { nombre: nom, correo: mail, codigo: cod, telefono: tel },
+          carrito: cart,
+          total: totalLabel
+        };
+
         fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(pedidoData) });
-        alert("Pedido registrado con éxito");
-        cart = []; updateCart(); toggleCart();
+
+        let listaTexto = cart.map(i => `• ${i.name} (x${i.qty}) - $${(i.price*i.qty).toFixed(2)}`).join('\n');
+        
+        emailjs.send('service_z64r2df', 'template_flf3eix', {
+          name: nom + " (Cauchos)",
+          email_to: mail,
+          message: listaTexto,
+          total: totalLabel,
+          time: new Date().toLocaleString()
+        }).then(() => {
+          alert("¡Pedido de cauchos enviado y registrado!");
+          cart = []; updateCart(); toggleCart();
+        }).finally(() => {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-envelope text-xl mb-1"></i><span class="text-[9px]">CORREO CLIENTE</span>';
+        });
       }
     }
   </script>
